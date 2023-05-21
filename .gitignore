@@ -1,0 +1,28 @@
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+
+# Compiled Go files
+*.exe
+*.test
+*.prof
+
+# Dependency directories (created by `go get` or `go mod`)
+/bin/
+/pkg/
+/vendor/
+/go.sum
+/go.mod
+
+# Build output
+/build/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.sublime-workspace
+
+# OS-specific files
+.DS_Store
+Thumbs.db
