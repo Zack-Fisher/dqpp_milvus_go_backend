@@ -3,6 +3,9 @@
 *.a
 *.so
 
+# the final executable
+bin/host
+
 # Compiled Go files
 *.exe
 *.test

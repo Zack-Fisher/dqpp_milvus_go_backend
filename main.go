@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"log"
 	"os"
-
-	"github.com/milvus-io/milvus-sdk-go/milvus"
+	"net/http"
 )
+
+// import "github.com/milvus-io/milvus-sdk-go/milvus" // Import Milvus Go SDK
 
 // Handler for the home route "/"
 func homeHandler(w http.ResponseWriter, r *http.Request) {
@@ -19,6 +20,12 @@ func aboutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	// milvus_port := os.Getenv("MILVUS_PORT")
+	// // If port is not set, default to 8080
+	// if milvus_port == "" {
+	// 	milvus_port = "19530"
+	// }
+
 	// Get port from environment variables
 	port := os.Getenv("GO_MILVUS_PORT")
 	// If port is not set, default to 8080
@@ -26,67 +33,62 @@ func main() {
 		port = "8080"
 	}
 
-	milvus_port := os.Getenv("MILVUS_PORT")
-	// If port is not set, default to 8080
-	if milvus_port == "" {
-		milvus_port = "19530"
-	}
-
 	// Define your routes
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/about", aboutHandler)
-
+	
 	// Start the server on port 8080
-	fmt.Println("Server listening on port 8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	fmt.Println("Server listening on port " + port)
+	log.Fatal(http.ListenAndServe(":" + port, nil))
 
 
-	// Connect to Milvus server
-	client, err := milvus.NewClient(milvus.Param{
-		"host":           "localhost",
-		"port":           "19530",
-		"timeout":        "20",
-		"max_connection": "10",
-	})
-	if err != nil {
-		log.Fatalf("Failed to connect to Milvus: %v", err)
-	}
-	defer client.Close()
+	// // Connect to Milvus server
+	// client, err := client.NewGrpcClient(context.Background(), "localhost" + milvus_port)
+	// if err != nil {
+	// 	// handle error
+	// }
 
-	// Create a collection
-	collectionName := "my_collection"
-	dimension := 128 // Dimensionality of vectors
-	indexType := "IVF_FLAT" // Index type for faster search
+	// if err != nil {
+	// 	log.Fatalf("Failed to connect to Milvus: %v", err)
+	// }
+	// defer client.Close()
 
-	err = client.CreateCollection(collectionName, dimension, milvus.WithIndexType(indexType))
-	if err != nil {
-		log.Fatalf("Failed to create collection: %v", err)
-	}
+	// // Create a collection
+	// collectionName := "my_collection"
+	// dimension := 128 // Dimensionality of vectors
+	// indexType := "IVF_FLAT" // Index type for faster search
 
-	// Insert vectors into the collection
-	vectors := [][]float32{
-		{1.0, 2.0, 3.0, ...}, // Replace with your actual vectors
-		{4.0, 5.0, 6.0, ...},
-		// Add more vectors as needed
-	}
-	ids := []int64{1, 2} // Replace with unique IDs for each vector
+	// err = client.CreateCollection(collectionName, dimension, milvus.WithIndexType(indexType))
+	// if err != nil {
+	// 	log.Fatalf("Failed to create collection: %v", err)
+	// }
 
-	err = client.Insert(collectionName, vectors, ids)
-	if err != nil {
-		log.Fatalf("Failed to insert vectors: %v", err)
-	}
+	// vectors := [][]float32{
+	// 	{
+	// 		1.0
+	// 		, 2.0
+	// 		, 3.0, 
+	// 		}, 
+	// }
+
+	// ids := []int64{1, 2} // Replace with unique IDs for each vector
+
+	// err = client.Insert(collectionName, vectors, ids)
+	// if err != nil {
+	// 	log.Fatalf("Failed to insert vectors: %v", err)
+	// }
 
 	// Perform vector similarity search
-	queryVector := []float32{1.5, 2.5, 3.5, ...} // Replace with your query vector
-	topK := 5 // Number of nearest neighbors to retrieve
+	// queryVector := []float32{1.5, 2.5, 3.5, ...} // Replace with your query vector
+	// topK := 5 // Number of nearest neighbors to retrieve
 
-	res, err := client.Search(collectionName, queryVector, topK)
-	if err != nil {
-		log.Fatalf("Failed to perform search: %v", err)
-	}
+	// res, err := client.Search(collectionName, queryVector, topK)
+	// if err != nil {
+	// 	log.Fatalf("Failed to perform search: %v", err)
+	// }
 
-	// Process search results
-	for _, result := range res.Results {
-		fmt.Printf("Vector ID: %d, Distance: %f\n", result.ID, result.Distance)
-	}
+	// // Process search results
+	// for _, result := range res.Results {
+	// 	fmt.Printf("Vector ID: %d, Distance: %f\n", result.ID, result.Distance)
+	// }
 }
